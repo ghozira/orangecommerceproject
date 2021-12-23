@@ -1,0 +1,299 @@
+//script notifikasi ketika requestor submit form ke email pemilik form
+function emailNotifikasi(e) {
+  const rData = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,21).getValues();
+  let noticket = rData[0][0];
+  let email = rData[0][2];
+  let nama = rData[0][3];
+  let title = rData[0][4];
+  let team = rData[0][5];
+  let type = rData[0][6];
+  let description = rData[0][7];
+  let metrics = rData[0][8];
+  let duedate = new Date(rData[0][9]).toLocaleDateString("en-US");
+  let filependukung = rData[0][10];
+  
+  var subject="[Data Request] "+noticket+" "+title+"";
+
+  var message=createHTMLHeader();
+
+  message+="<b>Data Request Detail :</b><br/><br/>";
+  message+="No Ticket         : <b>"+noticket+"</b><br/>";
+  message+="Email         : "+email+"<br/>";
+  message+="Nama        : "+nama+"<br/>";
+  message+="Team         : "+team+"<br/>";
+  message+="Title         : "+title+"<br/>";
+  message+="Type         : "+type+"<br/>";
+  message+="Description         : "+description+"<br/>";
+  message+="Metrics Needed         : "+metrics+"<br/>";
+  message+="Due Date         : "+duedate+"<br/><br/>";
+  message+="File Pendukung         : "+filependukung+"<br/>";
+  
+  message+=createHTMLFooter();
+
+  MailApp.sendEmail({
+    to:"ghazian.ra@gmail.com",
+    cc:"",
+    subject:subject,
+    htmlBody:message,
+    name:"ID Data Team"
+  });
+}
+
+//script notifikasi ke email PIC
+function emailStatusPIC(e) {
+   if (e.range.columnStart != 16 || e.value != "Done") return;
+  const rData = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,21).getValues();
+  let noticket = rData[0][0];
+  let email = rData[0][2];
+  let nama = rData[0][3];
+  let title = rData[0][4];
+  let team = rData[0][5];
+  let type = rData[0][6];
+  let description = rData[0][7];
+  let metrics = rData[0][8];
+  let duedate = new Date(rData[0][9]).toLocaleDateString("en-US");
+  let filependukung = rData[0][10];
+  let pic = rData[0][11];
+
+  var subject="[Data Request] "+noticket+" "+title+"";
+
+  var message=createHTMLHeader();
+
+  message+="<b>Data Request Detail :</b><br/><br/>";
+  message+="PIC         : <b>"+pic+"</b><br/>";
+  message+="No Ticket         : <b>"+noticket+"</b><br/>";
+  message+="Email         : "+email+"<br/>";
+  message+="Nama        : "+nama+"<br/>";
+  message+="Team         : "+team+"<br/>";
+  message+="Title         : "+title+"<br/>";
+  message+="Type         : "+type+"<br/>";
+  message+="Description         : "+description+"<br/>";
+  message+="Metrics Needed         : "+metrics+"<br/>";
+  message+="Due Date         : "+duedate+"<br/><br/>";
+  message+="File Pendukung         : "+filependukung+"<br/>";
+  
+  message+=createHTMLFooter();
+
+  MailApp.sendEmail({
+    to:pic,
+    subject:subject,
+    htmlBody:message,
+    name:"ID Data Team"
+  });
+}
+
+//script notifikasi ke email PIC jika status Waiting for Support
+function emailStatusWaitingSupport(e) {
+   if (e.range.columnStart != 13 || e.value != "Waiting for Support") return;
+  const rData = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,21).getValues();
+  let noticket = rData[0][0];
+  let email = rData[0][2];
+  let nama = rData[0][3];
+  let title = rData[0][4];
+  let team = rData[0][5];
+  let type = rData[0][6];
+  let description = rData[0][7];
+  let metrics = rData[0][8];
+  let duedate = new Date(rData[0][9]).toLocaleDateString("en-US");
+  let pic = rData[0][11];
+  let status = rData[0][12];
+
+  var subject="[Data Request] "+noticket+" "+title+"";
+
+  var message=createHTMLHeader();
+
+  message+="Hi "+pic+",<br/><br/>";
+  message+="Please proceed this request.<br/><br/>";
+  message+="No Ticket         : <b>"+noticket+"</b><br/>";
+  
+  message+="Data request detail :<br/><br/>";
+  message+="Type         : "+type+"<br/>";
+  message+="Description         : "+description+"<br/>";
+  message+="Metrics Needed         : "+metrics+"<br/>";
+  message+="Due Date         : "+duedate+"<br/><br/>";
+
+  message+="ID Data Team<br/><br/>";
+
+  message+=createHTMLFooter();
+
+  MailApp.sendEmail({
+    to:pic,
+    subject:subject,
+    htmlBody:message,
+    name:"ID Data Team"
+  });
+}
+
+//script notifikasi ke email requestor jika status Rejected
+function emailStatusRejected(e) {
+   if (e.range.columnStart != 13 || e.value != "Rejected") return;
+  const rData = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,22).getValues();
+  let noticket = rData[0][0];
+  let email = rData[0][2];
+  let nama = rData[0][3];
+  let title = rData[0][4];
+  let pic = rData[0][11];
+  let status = rData[0][12];
+  
+  var subject="[Data Request] "+noticket+" "+title+"";
+
+  var message=createHTMLHeader();
+
+  message+="Hi "+nama+", sorry we can't proceed the request further<br/><br/>";
+  message+="No Ticket         : <b>"+noticket+"</b><br/>";
+  message+="Status         : "+status+"<br/>";
+  message+="PIC Name         : "+pic+"<br/><br/>";
+
+  message+="ID Data Team<br/><br/>";
+
+  message+=createHTMLFooter();
+
+  MailApp.sendEmail({
+    to:email,
+    cc:pic+",ghazian.ra@gmail.com",
+    subject:subject,
+    htmlBody:message,
+    name:"ID Data Team"
+  });
+}
+
+//script notifikasi ke email requestor jika status under review
+function emailStatusUnderReview(e) {
+   if (e.range.columnStart != 13 || e.value != "Under Review") return;
+  const rData = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,21).getValues();
+  let noticket = rData[0][0];
+  let email = rData[0][2];
+  let nama = rData[0][3];
+  let title = rData[0][4];
+  let type = rData[0][6];
+  let description = rData[0][7];
+  let metrics = rData[0][8];
+  let urgency = rData[0][9];
+  let duedate = new Date(rData[0][10]).toLocaleDateString("en-US");
+  let pic = rData[0][11];
+  let status = rData[0][12];
+
+  var subject="[Data Request] "+noticket+" "+title+"";
+
+  var message=createHTMLHeader();
+
+  message+="Hi "+nama+",<br/><br/>";
+  message+="Well noted on your request. I am currently reviewing the request and will get back to you.<br/><br/>";
+  message+="No Ticket         : <b>"+noticket+"</b><br/>";
+  message+="Status         : "+status+"<br/>";
+  message+="PIC Name         : "+pic+"<br/><br/>";
+
+  message+="Data request detail :<br/><br/>";
+  message+="Type         : "+type+"<br/>";
+  message+="Description         : "+description+"<br/>";
+  message+="Metrics Needed         : "+metrics+"<br/>";
+  message+="Urgency         : "+urgency+"<br/>";
+  message+="Due Date         : "+duedate+"<br/><br/>";
+
+  message+="ID Data Team<br/><br/>";
+
+  message+=createHTMLFooter();
+
+  MailApp.sendEmail({
+    to:email,
+    cc:pic+",ghazian.ra@gmail.com",
+    subject:subject,
+    htmlBody:message,
+    name:"ID Data Team"
+  });
+}
+
+//script notifikasi ke email requestor jika status on process
+function emailStatusOnProcess(e) {
+   if (e.range.columnStart != 13 || e.value != "On Process") return;
+  const rData = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,21).getValues();
+  let noticket = rData[0][0];
+  let email = rData[0][2];
+  let nama = rData[0][3];
+  let title = rData[0][4];
+  let type = rData[0][6];
+  let description = rData[0][7];
+  let metrics = rData[0][8];
+  let urgency = rData[0][9];
+  let duedate = new Date(rData[0][10]).toLocaleDateString("en-US");
+  let pic = rData[0][11];
+  let status = rData[0][12];
+
+  var subject="[Data Request] "+noticket+" "+title+"";
+
+  var message=createHTMLHeader();
+
+  message+="Hi "+nama+",<br/><br/>";
+  message+=pic+" change your status to on process.<br/><br/>";
+  message+="No Ticket         : <b>"+noticket+"</b><br/>";
+  
+  message+="Data request detail :<br/><br/>";
+  message+="Type         : "+type+"<br/>";
+  message+="Description         : "+description+"<br/>";
+  message+="Metrics Needed         : "+metrics+"<br/>";
+  message+="Urgency         : "+urgency+"<br/>";
+  message+="Due Date         : "+duedate+"<br/><br/>";
+
+  message+="ID Data Team<br/><br/>";
+
+  message+=createHTMLFooter();
+
+  MailApp.sendEmail({
+    to:email,
+    cc:pic+",ghazian.ra@gmail.com",
+    subject:subject,
+    htmlBody:message,
+    name:"ID Data Team"
+  });
+}
+
+//script notifikasi ke email requestor jika status Done
+function emailStatusDone(e) {
+   if (e.range.columnStart != 13 || e.value != "Done") return;
+  const rData = e.source.getActiveSheet().getRange(e.range.rowStart,1,1,21).getValues();
+  let noticket = rData[0][0];
+  let email = rData[0][2];
+  let nama = rData[0][3];
+  let title = rData[0][4];
+  let pic = rData[0][11];
+  let linkresult = rData[0][19];
+  let status = rData[0][12];
+
+  var subject="[Data Request] "+noticket+" "+title+"";
+
+  var message=createHTMLHeader();
+
+  message+="Hi "+nama+", kindly find data for "+title+" below :<br/><br/>";
+  message+="Result Link         : "+linkresult+"<br/>";
+  message+="Status         : "+status+"<br/>";
+  message+="PIC         : "+pic+"<br/><br/>";
+  message+="If there is more question related the request, please don't hesitate to reach me. Thank you!"+"<br/><br/>";
+
+  message+="ID Data Team<br/><br/>";
+
+  message+=createHTMLFooter();
+
+  MailApp.sendEmail({
+    to:email,
+    cc:pic+",ghazian.ra@gmail.com",
+    subject:subject,
+    htmlBody:message,
+    name:"ID Data Team"
+  });
+}
+
+function createHTMLHeader(){
+  var html="<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>";
+  html+="<html xmlns='https://www.w3.org/1999/xhtml'>";
+  html+="<head>";
+  html+="<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />";
+  html+="</head>";
+  html+="<body>";
+  return html;
+}
+
+function createHTMLFooter(){
+  var html="</body>";
+  html+="</html>";
+  return html;
+}
