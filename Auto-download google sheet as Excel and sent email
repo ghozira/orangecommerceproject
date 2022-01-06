@@ -1,0 +1,34 @@
+function DownloadAsExcel(){
+  
+  var MILLIS_PER_DAY = 1000 * 60 * 60 * 24;
+  var now = new Date();
+  var yesterday = new Date(now.getTime() - MILLIS_PER_DAY);
+
+  try {
+    var ss = SpreadsheetApp.getActive();
+
+    var url = "https://docs.google.com/feeds/download/spreadsheets/Export?key=" + ss.getId() + "&exportFormat=xlsx";
+
+    var params = {
+      method      : "get",
+      headers     : {"Authorization": "Bearer " + ScriptApp.getOAuthToken()},
+      muteHttpExceptions: true
+    };
+
+    var blob = UrlFetchApp.fetch(url, params).getBlob();
+    var MailAddress = "ritesa.sulastri@shopee.com, dewi.utari@shopee.com, MTC_ella.ningsih@shopeemobile-external.com, MTC_cecep.permana@shopeemobile-external.com, MTC_dewi.paputungan@shopeemobile-external.com, MTC_sri.ningsih@shopeemobile-external.com";
+    var MailSubject = "CBCS Quality Improvement Report - " +  Utilities.formatDate(now, "GMT+7", " yyyy-MM-dd");
+    var MailBody = "Kindly check attached file for your reference. Thank you";
+
+    blob.setName(ss.getName() + Utilities.formatDate(now, "GMT+7", " yyyy-MM-dd") + ".xlsx");
+
+    MailApp.sendEmail({
+      to: MailAddress,
+      subject: MailSubject,
+      body: MailBody,
+      attachments: [blob]});
+
+  } catch (f) {
+    Logger.log(f.toString());
+  }
+}
