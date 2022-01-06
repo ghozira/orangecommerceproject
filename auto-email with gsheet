@@ -1,0 +1,62 @@
+  function drawTable() {
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Summary-Daily").hideSheet();
+    var ss_data = getData();
+    var MILLIS_PER_DAY = 1000 * 60 * 60 * 24;
+  var now = new Date();
+  var yesterday = new Date(now.getTime() - MILLIS_PER_DAY);
+
+  try {
+    var ss = SpreadsheetApp.getActive();
+
+    var url = "https://docs.google.com/feeds/download/spreadsheets/Export?key=" + ss.getId() + "&exportFormat=xlsx";
+
+    var params = {
+      method      : "get",
+      headers     : {"Authorization": "Bearer " + ScriptApp.getOAuthToken()},
+      muteHttpExceptions: true
+    };
+
+    var blob = UrlFetchApp.fetch(url, params).getBlob();
+    var data = ss_data[0];
+    var background = ss_data[1];
+    var fontColor = ss_data[2];
+    var fontStyles = ss_data[3];
+    var fontWeight = ss_data[4];
+    var fontSize = ss_data[5];
+    var html = "<table border-colapse: collapse>";
+    for (var i = 0; i < data.length; i++) {
+        html += "<tr>"
+        for (var j = 0; j < data[i].length; j++) {
+            html += "<td style='height:auto;overflow-x:auto; background:" + background[i][j] + ";color:" + fontColor[i][j] + ";font-style:" + fontStyles[i][j] + ";font-weight:" + fontWeight[i][j] + ";font-size:" + (fontSize[i][j] + 2) + "px;'>" + data[i][j] + "</td>";
+        }
+        html += "</tr>";
+    }
+
+    blob.setName(ss.getName() + Utilities.formatDate(now, "GMT+7", " yyyy-MM-dd") + ".xlsx");
+
+    html + "</table>"
+    MailApp.sendEmail({
+        to: "agustinus.gunawan@shopee.com, calvin.sugiono@shopee.com, theresia.utami@shopee.com, muhammad.dinda@shopee.com, hendi.septian@shopee.com, azel.fauzan@shopee.com, Ikhwan.wahyudin@shopee.com, nur.adlia@shopee.com,	khana.rizky@shopee.com ,	Tya.nisa@shopee.com,	rajif.achmad@shopee.com,	mia.indriani@shopee.com,	desvania.maharani@shopee.com,	fatma.pratiwi@shopee.com",
+        cc:"dimas.andika@shopee.com, ritesa.sulastri@shopee.com, marianto.utomo@shopee.com, kurniawan.wicaksono@shopee.com",
+        subject: "SBS Open Cases for " +  Utilities.formatDate(now, "GMT+7", " yyyy-MM-dd"),
+        htmlBody: "Hi Team, <br/><br/> Below is top 10 SBS Open Cases from Salesforce up to" +  Utilities.formatDate(now, "GMT+7", " yyyy-MM-dd")+"<br/><br/>"
+        + html + " ",
+        attachments: [blob]
+
+    })
+  } catch (f) {
+    Logger.log(f.toString());
+  }
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Summary-Daily").activate();
+}
+
+function getData(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Summary-Daily").getDataRange();
+  var background = ss.getBackgrounds();
+  var val = ss.getDisplayValues();
+  var fontColor = ss.getFontColors();
+  var fontStyles = ss.getFontStyles();
+  var fontWeight = ss.getFontWeights();
+  var fontSize = ss.getFontSizes();
+  return [val,background,fontColor,fontStyles,fontWeight,fontSize];
+}
